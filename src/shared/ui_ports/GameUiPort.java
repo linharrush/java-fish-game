@@ -22,4 +22,5 @@ public abstract class GameUiPort {
     public abstract void addFish(int id, double x, double y, double size, boolean isPlayer, int fishType, String direction);
     public abstract void updateFish(int id, double x, double y, double size, int fishType, String direction);
     public abstract void updatePlayerPosition(int id, double x, double y);
+    public abstract void removeFish(int id);
 }

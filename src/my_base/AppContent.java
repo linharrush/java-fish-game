@@ -2,8 +2,10 @@ package my_base;
 
 import team.control.OceanGameBackend;
 import team.control.MovementController;
+import team.control.CollisionController;
 import team.model.Canvas;
 import team.model.GameState;
+import team.model.LevelProgress;
 
 /*
  * This class should hold the content of the system, i.e., all elements that are
@@ -14,12 +16,14 @@ public class AppContent {
 	private Canvas canvas = new Canvas();
 	private GameState gameState;
 	private MovementController movementController;
+	private CollisionController collisionController;
 	private OceanGameBackend oceanGameBackend;
 	
 	public void initContent() {
 		canvas.initCanvas();
-		gameState = new GameState(canvas);
+		gameState = new GameState(canvas, new LevelProgress(1, 0, 100, 5));
 		movementController = new MovementController(gameState);
+		collisionController = new CollisionController(gameState);
 		oceanGameBackend = new OceanGameBackend();
 	};
 
@@ -32,6 +36,10 @@ public class AppContent {
 
 	public MovementController movementController() {
 		return movementController;
+	}
+
+	public CollisionController collisionController() {
+		return collisionController;
 	}
 
 	public OceanGameBackend oceanGameBackend() {

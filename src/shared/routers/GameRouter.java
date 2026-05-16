@@ -38,7 +38,7 @@ public class GameRouter implements SubRouter {
             // UI input: eat check for player fish
             case "/fish/eat": {
                 int id = p.getInt(0);
-                backend.eat(id);
+                App.content().collisionController().handlePlayerCollision(id);
                 return null;
             }
 

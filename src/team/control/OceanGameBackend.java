@@ -53,47 +53,6 @@ public class OceanGameBackend {
         gameUiPort().updateFish(fishId, x, y, f.getSize(), f.getFishType(), f.getDirection());
     }
 
-    public void eat(int playerFishId) {
-        Canvas canvas = App.content().canvas();
-        int index = fishIdToIndex(playerFishId);
-        if (index < 0 || index >= canvas.getFishCount()) {
-            return;
-        }
-
-        Fish playerFish = canvas.getFish(index);
-        if (playerFish == null || !playerFish.isPlayer()) {
-            return;
-        }
-
-        double playerSize = playerFish.getSize();
-        double playerX = playerFish.getCenter().getX();
-        double playerY = playerFish.getCenter().getY();
-
-        for (int i = 0; i < canvas.getFishCount(); i++) {
-            if (i == index) {
-                continue;
-            }
-
-            Fish otherFish = canvas.getFish(i);
-            if (otherFish == null) {
-                continue;
-            }
-
-            double otherSize = otherFish.getSize();
-            double dx = otherFish.getCenter().getX() - playerX;
-            double dy = otherFish.getCenter().getY() - playerY;
-            double distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance <= (playerSize / 2.0 + otherSize / 2.0)) {
-                if (otherSize > playerSize) {
-                    System.out.println("LOSE!");
-                } else if (otherSize < playerSize) {
-                    System.out.println("WIN!");
-                }
-            }
-        }
-    }
-
     public void moveFishByIndex(int index, double dx, double dy) {
         if (!runPeriodic) {
             return;

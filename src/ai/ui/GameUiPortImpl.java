@@ -76,4 +76,10 @@ public class GameUiPortImpl extends GameUiPort {
             panel.repaint();
         }
     }
+
+    @Override
+    public void removeFish(int id) {
+        fish.remove(String.valueOf(id));
+        panel.repaint();
+    }
 }

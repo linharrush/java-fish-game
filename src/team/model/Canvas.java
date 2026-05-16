@@ -15,6 +15,10 @@ public class Canvas {
         return fish[index];
     }
 
+    public void removeFish(int index) {
+        fish[index] = null;
+    }
+
     public PlayerFish getPlayerFish() {
         for (Fish f : fish) {
             if (f instanceof PlayerFish) {
