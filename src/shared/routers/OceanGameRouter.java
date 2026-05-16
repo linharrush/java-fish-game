@@ -7,7 +7,6 @@ import team.control.OceanGameBackend;
 
 public class OceanGameRouter implements SubRouter {
 
-    // private final Ex3Backend backend;
     private final OceanGameBackend backend;
 
     public OceanGameRouter() {
@@ -17,7 +16,7 @@ public class OceanGameRouter implements SubRouter {
     @Override
     public Object route(String subPath, Params p) {
         // Uncomment next line to see routing commands in console
-        // System.out.println("Routing Ex3: " + subPath + " with params " + p);
+        // System.out.println("Routing ocean: " + subPath + " with params " + p);
         switch (subPath) {
 
             // UI calls once on startup
@@ -41,7 +40,6 @@ public class OceanGameRouter implements SubRouter {
                 return null;
             }
 
-            // UI input: resize circle
             case "/periodic": {
                 backend.toggleRunPeriodic();
                 return null;
