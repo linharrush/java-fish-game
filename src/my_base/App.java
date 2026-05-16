@@ -2,7 +2,7 @@ package my_base;
 import ai.ui.Ui;
 import base.PeriodicScheduler;
 import shared.MainRouter;
-import shared.routers.OceanGameRouter;
+import shared.routers.GameRouter;
 
 public class App {
 
@@ -12,7 +12,7 @@ public class App {
     
     // TO_DO: Register all routers here
     private static void registerRouters() {
-        mainRouter.addRouter("ocean", new OceanGameRouter());
+        mainRouter.addRouter("ocean", new GameRouter());
     }
 
     // Allows all classes in teh system to access content

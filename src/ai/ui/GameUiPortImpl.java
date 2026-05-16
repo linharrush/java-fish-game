@@ -2,15 +2,15 @@ package ai.ui;
 
 import java.util.Map;
 import javax.swing.JPanel;
-import shared.ui_ports.OceanGameUiPort;
+import shared.ui_ports.GameUiPort;
 import team.model.Fish;
 
-public class OceanGameUiPortImpl extends OceanGameUiPort {
+public class GameUiPortImpl extends GameUiPort {
     private Map<String, Fish> fish;
     private JPanel panel;
     private VideoBackgroundPanel backgroundPanel;
 
-    public OceanGameUiPortImpl(Map<String, Fish> fish, JPanel panel, VideoBackgroundPanel backgroundPanel) {
+    public GameUiPortImpl(Map<String, Fish> fish, JPanel panel, VideoBackgroundPanel backgroundPanel) {
         this.fish = fish;
         this.panel = panel;
         this.backgroundPanel = backgroundPanel;
@@ -62,6 +62,17 @@ public class OceanGameUiPortImpl extends OceanGameUiPort {
             f.setSize(size);
             f.setFishType(fishType);
             f.setDirection(direction);
+            panel.repaint();
+        }
+    }
+
+    @Override
+    public void updatePlayerPosition(int id, double x, double y) {
+        Fish f = fish.get(String.valueOf(id));
+
+        if (f != null) {
+            f.getCenter().setX(x);
+            f.getCenter().setY(y);
             panel.repaint();
         }
     }

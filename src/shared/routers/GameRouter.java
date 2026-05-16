@@ -3,14 +3,17 @@ package shared.routers;
 import base.Params;
 import base.SubRouter;
 import my_base.App;
+import team.control.MovementController;
 import team.control.OceanGameBackend;
 
-public class OceanGameRouter implements SubRouter {
+public class GameRouter implements SubRouter {
 
     private final OceanGameBackend backend;
+    private final MovementController movementController;
 
-    public OceanGameRouter() {
+    public GameRouter() {
         this.backend = App.content().oceanGameBackend();
+        this.movementController = App.content().movementController();
     }
 
     @Override
@@ -24,12 +27,11 @@ public class OceanGameRouter implements SubRouter {
                 backend.startScenario();
                 return null;
 
-            // UI input: move fish
-            case "/fish/move": {
-                int id = p.getInt(0);
+            // UI input: move player fish
+            case "/player/move": {
                 double x = p.getDouble(1);
                 double y = p.getDouble(2);
-                backend.moveFish(id, x, y);
+                movementController.movePlayer(x, y);
                 return null;
             }
 

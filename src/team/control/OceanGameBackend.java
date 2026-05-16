@@ -1,14 +1,14 @@
 package team.control;
 
 import my_base.App;
-import shared.ui_ports.OceanGameUiPort;
+import shared.ui_ports.GameUiPort;
 import team.model.Canvas;
 import team.model.Fish;
 
 public class OceanGameBackend {
 
-    private OceanGameUiPort oceanGameUiPort() {
-        return OceanGameUiPort.getInstance();
+    private GameUiPort gameUiPort() {
+        return GameUiPort.getInstance();
     }
 
     private boolean runPeriodic = true;
@@ -19,7 +19,7 @@ public class OceanGameBackend {
 
         for (int i = 0; i < canvas.getFishCount(); i++) {
             Fish f = canvas.getFish(i);
-            oceanGameUiPort().addFish(
+            gameUiPort().addFish(
                     f.getId(),
                     f.getCenter().getX(),
                     f.getCenter().getY(),
@@ -29,7 +29,7 @@ public class OceanGameBackend {
                     f.getDirection());
         }
 
-        oceanGameUiPort().log("Scenario started: 3 fish.");
+        gameUiPort().log("Scenario started: 3 fish.");
     }
 
     private int fishIdToIndex(int fishId) {
@@ -50,7 +50,7 @@ public class OceanGameBackend {
 
         f.getCenter().setX(x);
         f.getCenter().setY(y);
-        oceanGameUiPort().updateFish(fishId, x, y, f.getSize(), f.getFishType(), f.getDirection());
+        gameUiPort().updateFish(fishId, x, y, f.getSize(), f.getFishType(), f.getDirection());
     }
 
     public void eat(int playerFishId) {
@@ -111,12 +111,12 @@ public class OceanGameBackend {
 
     public void oceanView() {
         this.oceanViewState = true;
-        oceanGameUiPort().updateBackgroundToOceanView();
+        gameUiPort().updateBackgroundToOceanView();
     }
 
     public void normalView() {
         this.oceanViewState = false;
-        oceanGameUiPort().updateBackgroundToNormalView();
+        gameUiPort().updateBackgroundToNormalView();
     }
 
     public boolean isOceanViewState() {

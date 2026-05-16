@@ -12,7 +12,7 @@ public class Ui {
     private MainRouter mainRouter;
     private Map<String, Fish> fish = new HashMap<>();
     private DrawingPanel drawingPanel;
-    private OceanGameUiPortImpl uiInstance;
+    private GameUiPortImpl uiInstance;
 
     public void setUiPorts() {
         // Panel will be created in createAndShowWindow, so we defer this
@@ -41,8 +41,8 @@ public class Ui {
         // Start persistent video background immediately (will continue playing forever)
         backgroundPanel.setBackgroundVideo("images/ocean_background.mp4");
 
-        uiInstance = new OceanGameUiPortImpl(fish, drawingPanel, backgroundPanel);
-        shared.ui_ports.OceanGameUiPort.setInstance(uiInstance);
+        uiInstance = new GameUiPortImpl(fish, drawingPanel, backgroundPanel);
+        shared.ui_ports.GameUiPort.setInstance(uiInstance);
     }
 
 }
