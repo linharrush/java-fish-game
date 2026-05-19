@@ -7,6 +7,9 @@ import team.model.GameState;
 import team.model.PlayerFish;
 
 public class CollisionController {
+    private static final double HITBOX_WIDTH_SCALE = 0.9;
+    private static final double HITBOX_HEIGHT_RATIO = 0.45;
+
     private final GameState gameState;
 
     public CollisionController(GameState gameState) {
@@ -29,9 +32,21 @@ public class CollisionController {
     private boolean isColliding(Fish firstFish, Fish secondFish) {
         double dx = secondFish.getCenter().getX() - firstFish.getCenter().getX();
         double dy = secondFish.getCenter().getY() - firstFish.getCenter().getY();
-        double distance = Math.sqrt(dx * dx + dy * dy);
+        double combinedHalfWidth = getHitboxWidth(firstFish) / 2.0 + getHitboxWidth(secondFish) / 2.0;
+        double combinedHalfHeight = getHitboxHeight(firstFish) / 2.0 + getHitboxHeight(secondFish) / 2.0;
 
-        return distance <= (firstFish.getSize() / 2.0 + secondFish.getSize() / 2.0);
+        double normalizedX = dx / combinedHalfWidth;
+        double normalizedY = dy / combinedHalfHeight;
+
+        return normalizedX * normalizedX + normalizedY * normalizedY <= 1.0;
+    }
+
+    private double getHitboxWidth(Fish fish) {
+        return fish.getSize() * HITBOX_WIDTH_SCALE;
+    }
+
+    private double getHitboxHeight(Fish fish) {
+        return fish.getSize() * HITBOX_HEIGHT_RATIO;
     }
 
     public boolean isPlayerEatenBy(Fish otherFish) {

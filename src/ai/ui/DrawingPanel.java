@@ -130,11 +130,13 @@ public class DrawingPanel extends JPanel {
                     continue;
                 }
 
-                int size = (int) f.getSize();
-                int fishX = (int) f.getCenter().getX() - size / 2;
-                int fishY = (int) f.getCenter().getY() - size / 2;
+                Image fishImg = loadFishImage(f);
+                int fishWidth = (int) f.getSize();
+                int fishHeight = fishImg != null ? getScaledHeight(fishImg, fishWidth) : fishWidth;
+                int fishX = (int) f.getCenter().getX() - fishWidth / 2;
+                int fishY = (int) f.getCenter().getY() - fishHeight / 2;
 
-                if (x >= fishX && x <= fishX + size && y >= fishY && y <= fishY + size && f.isPlayer()) {
+                if (x >= fishX && x <= fishX + fishWidth && y >= fishY && y <= fishY + fishHeight && f.isPlayer()) {
                     draggedFishId = entry.getKey();
                     return;
                 }
