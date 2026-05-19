@@ -8,7 +8,7 @@ public class Canvas {
 
         fish[0] = new PlayerFish(3, 400, 500, 90, 2, "left");
         fish[1] = new Fish(4, 100, 300, 270, false, 6, "right");
-        fish[2] = new Fish(5, 500, 150, 60, false, 1, "left");
+        fish[2] = new Fish(5, 500, 150, 60, false, 4, "left");
     }
 
     public Fish getFish(int index) {
