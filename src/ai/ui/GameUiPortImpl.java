@@ -98,6 +98,14 @@ public class GameUiPortImpl extends GameUiPort {
         Fish f = fish.get(String.valueOf(id));
 
         if (f != null) {
+            double previousX = f.getCenter().getX();
+
+            if (x < previousX) {
+                f.setDirection("left");
+            } else if (x > previousX) {
+                f.setDirection("right");
+            }
+
             f.getCenter().setX(x);
             f.getCenter().setY(y);
             panel.repaint();
