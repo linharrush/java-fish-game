@@ -3,10 +3,12 @@ package team.model;
 public class GameState {
     private final Canvas canvas;
     private final LevelProgress levelProgress;
+    private GameMode mode;
 
     public GameState(Canvas canvas, LevelProgress levelProgress) {
         this.canvas = canvas;
         this.levelProgress = levelProgress;
+        this.mode = GameMode.MAIN_MENU;
     }
 
     public PlayerFish getPlayerFish() {
@@ -27,5 +29,13 @@ public class GameState {
 
     public LevelProgress getLevelProgress() {
         return levelProgress;
+    }
+
+    public GameMode getMode() {
+        return mode;
+    }
+
+    public void setMode(GameMode mode) {
+        this.mode = mode;
     }
 }

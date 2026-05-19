@@ -1,6 +1,7 @@
 package team.control;
 
 import shared.ui_ports.GameUiPort;
+import my_base.App;
 import team.model.Fish;
 import team.model.GameState;
 import team.model.PlayerFish;
@@ -55,7 +56,8 @@ public class CollisionController {
             }
 
             if (isPlayerEatenBy(otherFish)) {
-                System.out.println("LOSE!");
+                App.content().gameController().playerLost();
+                return;
             } else if (canPlayerEat(otherFish)) {
                 System.out.println("Points before eating: " + gameState.getLevelProgress().getCurrentPoints());
                 gameState.removeFish(i);

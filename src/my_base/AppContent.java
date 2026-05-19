@@ -3,6 +3,7 @@ package my_base;
 import team.control.OceanGameBackend;
 import team.control.MovementController;
 import team.control.CollisionController;
+import team.control.GameController;
 import team.model.Canvas;
 import team.model.GameState;
 import team.model.LevelProgress;
@@ -17,11 +18,13 @@ public class AppContent {
 	private GameState gameState;
 	private MovementController movementController;
 	private CollisionController collisionController;
+	private GameController gameController;
 	private OceanGameBackend oceanGameBackend;
 	
 	public void initContent() {
 		canvas.initCanvas();
 		gameState = new GameState(canvas, new LevelProgress(1, 0, 100, 5));
+		gameController = new GameController(gameState);
 		movementController = new MovementController(gameState);
 		collisionController = new CollisionController(gameState);
 		oceanGameBackend = new OceanGameBackend();
@@ -40,6 +43,10 @@ public class AppContent {
 
 	public CollisionController collisionController() {
 		return collisionController;
+	}
+
+	public GameController gameController() {
+		return gameController;
 	}
 
 	public OceanGameBackend oceanGameBackend() {

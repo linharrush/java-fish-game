@@ -23,9 +23,12 @@ public class GameRouter implements SubRouter {
         switch (subPath) {
 
             // UI calls once on startup
-            case "/start":
+            case "/start": {
+                int selectedSkin = p.getInt(0);
+                App.content().gameController().startGame(selectedSkin);
                 backend.startScenario();
                 return null;
+            }
 
             // UI input: move player fish
             case "/player/move": {
@@ -55,6 +58,11 @@ public class GameRouter implements SubRouter {
 
             case "/normalView": {
                 backend.normalView();
+                return null;
+            }
+
+            case "/menu": {
+                App.content().gameController().showMainMenu();
                 return null;
             }
 

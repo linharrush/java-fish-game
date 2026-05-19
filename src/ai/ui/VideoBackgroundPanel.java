@@ -5,18 +5,19 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.net.URL;
+import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
 public class VideoBackgroundPanel extends JLayeredPane {
-    private final DrawingPanel drawingPanel;
+    private final JComponent contentPanel;
     private Component videoComponent;
     private Object fxMediaView;
 
-    public VideoBackgroundPanel(DrawingPanel drawingPanel) {
+    public VideoBackgroundPanel(JComponent contentPanel) {
         super();
-        this.drawingPanel = drawingPanel;
-        this.drawingPanel.setOpaque(false); // allow underlying video to show through
-        add(this.drawingPanel, JLayeredPane.PALETTE_LAYER); // UI/game layer on top
+        this.contentPanel = contentPanel;
+        this.contentPanel.setOpaque(false);
+        add(this.contentPanel, JLayeredPane.PALETTE_LAYER);
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -35,7 +36,7 @@ public class VideoBackgroundPanel extends JLayeredPane {
         URL resourceUrl = getClass().getResource(resourceName);
         if (resourceUrl == null) {
             System.err.println("VideoBackgroundPanel: video resource not found: " + resourceName + ". Falling back to static background image.");
-            drawingPanel.setBackgroundImage("images/ocean_background.png");
+            setContentBackgroundImage("images/ocean_background.png");
             repaint();
             return;
         }
@@ -49,14 +50,14 @@ public class VideoBackgroundPanel extends JLayeredPane {
         Component newVideoComponent = createJfxVideoComponent(resourceUrl);
         if (newVideoComponent != null) {
             videoComponent = newVideoComponent;
-            add(videoComponent, JLayeredPane.DEFAULT_LAYER); // video background on bottom layer
+            add(videoComponent, JLayeredPane.DEFAULT_LAYER);
             resizeChildren();
             revalidate();
             repaint();
-            drawingPanel.clearBackgroundImage();
+            clearContentBackgroundImage();
         } else {
             System.err.println("VideoBackgroundPanel: failed to create video component. Falling back to static background image.");
-            drawingPanel.setBackgroundImage("images/ocean_background.png");
+            setContentBackgroundImage("images/ocean_background.png");
             repaint();
         }
     }
@@ -69,7 +70,7 @@ public class VideoBackgroundPanel extends JLayeredPane {
             revalidate();
             repaint();
         }
-        drawingPanel.clearBackgroundImage();
+        clearContentBackgroundImage();
     }
 
     private void resizeChildren() {
@@ -78,7 +79,19 @@ public class VideoBackgroundPanel extends JLayeredPane {
             videoComponent.setBounds(0, 0, size.width, size.height);
             updateVideoViewSize(size.width, size.height);
         }
-        drawingPanel.setBounds(0, 0, size.width, size.height);
+        contentPanel.setBounds(0, 0, size.width, size.height);
+    }
+
+    private void setContentBackgroundImage(String imageName) {
+        if (contentPanel instanceof DrawingPanel) {
+            ((DrawingPanel) contentPanel).setBackgroundImage(imageName);
+        }
+    }
+
+    private void clearContentBackgroundImage() {
+        if (contentPanel instanceof DrawingPanel) {
+            ((DrawingPanel) contentPanel).clearBackgroundImage();
+        }
     }
 
     private Component createJfxVideoComponent(URL resourceUrl) {

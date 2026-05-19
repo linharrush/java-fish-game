@@ -9,11 +9,23 @@ public class GameUiPortImpl extends GameUiPort {
     private Map<String, Fish> fish;
     private JPanel panel;
     private VideoBackgroundPanel backgroundPanel;
+    private Runnable showMainMenuAction;
+    private Runnable showGameScreenAction;
+    private Runnable showLoseScreenAction;
 
-    public GameUiPortImpl(Map<String, Fish> fish, JPanel panel, VideoBackgroundPanel backgroundPanel) {
+    public GameUiPortImpl(
+            Map<String, Fish> fish,
+            JPanel panel,
+            VideoBackgroundPanel backgroundPanel,
+            Runnable showMainMenuAction,
+            Runnable showGameScreenAction,
+            Runnable showLoseScreenAction) {
         this.fish = fish;
         this.panel = panel;
         this.backgroundPanel = backgroundPanel;
+        this.showMainMenuAction = showMainMenuAction;
+        this.showGameScreenAction = showGameScreenAction;
+        this.showLoseScreenAction = showLoseScreenAction;
     }
 
     @Override
@@ -24,6 +36,21 @@ public class GameUiPortImpl extends GameUiPort {
     @Override
     public void updateBackgroundToNormalView() {
         // Video background is persistent and always visible. No action needed.
+    }
+
+    @Override
+    public void showMainMenu() {
+        showMainMenuAction.run();
+    }
+
+    @Override
+    public void showGameScreen() {
+        showGameScreenAction.run();
+    }
+
+    @Override
+    public void showLoseScreen() {
+        showLoseScreenAction.run();
     }
 
     @Override
