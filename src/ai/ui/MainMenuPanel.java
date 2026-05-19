@@ -39,7 +39,7 @@ public class MainMenuPanel extends JPanel {
         JPanel skinPanel = new JPanel(new GridLayout(1, 3, 28, 0));
         skinPanel.setOpaque(false);
         for (int skin = 1; skin <= 3; skin++) {
-            skinPanel.add(createSkinButton(skin));
+            skinPanel.add(createSkinButton(skin, getSkinDisplayName(skin)));
         }
         add(skinPanel, BorderLayout.CENTER);
 
@@ -59,8 +59,8 @@ public class MainMenuPanel extends JPanel {
         updateSelectedSkin();
     }
 
-    private JButton createSkinButton(int skin) {
-        JButton button = new JButton("Fish " + skin, loadFishIcon(skin));
+    private JButton createSkinButton(int skin, String displayName) {
+        JButton button = new JButton(displayName, loadFishIcon(skin));
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setFont(new Font("SansSerif", Font.BOLD, 18));
@@ -79,14 +79,41 @@ public class MainMenuPanel extends JPanel {
         return button;
     }
 
+    private String getSkinDisplayName(int skin) {
+        switch (skin) {
+            case 1:
+                return "FIRST";
+            case 2:
+                return "Nemo";
+            case 3:
+                return "Dory";
+            default:
+                return "Fish " + skin;
+        }
+    }
+
     private ImageIcon loadFishIcon(int skin) {
-        java.net.URL url = getClass().getResource("images/fish" + skin + "R.png");
+        java.net.URL url = getClass().getResource("images/playerFish" + skin + "R.png");
         if (url == null) {
             return null;
         }
 
-        Image image = new ImageIcon(url).getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+        Image originalImage = new ImageIcon(url).getImage();
+        int targetWidth = 170;
+        int targetHeight = getScaledHeight(originalImage, targetWidth);
+        Image image = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
         return new ImageIcon(image);
+    }
+
+    private int getScaledHeight(Image image, int targetWidth) {
+        int originalWidth = image.getWidth(this);
+        int originalHeight = image.getHeight(this);
+
+        if (originalWidth <= 0 || originalHeight <= 0) {
+            return targetWidth;
+        }
+
+        return Math.max(1, (int) Math.round(targetWidth * (originalHeight / (double) originalWidth)));
     }
 
     private void updateSelectedSkin() {

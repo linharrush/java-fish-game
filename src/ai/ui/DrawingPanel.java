@@ -67,20 +67,34 @@ public class DrawingPanel extends JPanel {
                 continue;
             }
 
-            Image fishImg = loadFishImage(f.getFishType(), f.getDirection());
+            Image fishImg = loadFishImage(f);
 
             if (fishImg != null) {
                 int size = (int) f.getSize();
-                int x = (int) f.getCenter().getX() - size / 2;
-                int y = (int) f.getCenter().getY() - size / 2;
-                g2d.drawImage(fishImg, x, y, size, size, this);
+                int drawWidth = size;
+                int drawHeight = getScaledHeight(fishImg, drawWidth);
+                int x = (int) f.getCenter().getX() - drawWidth / 2;
+                int y = (int) f.getCenter().getY() - drawHeight / 2;
+                g2d.drawImage(fishImg, x, y, drawWidth, drawHeight, this);
             }
         }
     }
 
-    private Image loadFishImage(int fishNumber, String direction) {
-        String directionLetter = direction.equals("left") ? "L" : "R";
-        String filename = "images/fish" + fishNumber + directionLetter + ".png";
+    private int getScaledHeight(Image image, int targetWidth) {
+        int originalWidth = image.getWidth(this);
+        int originalHeight = image.getHeight(this);
+
+        if (originalWidth <= 0 || originalHeight <= 0) {
+            return targetWidth;
+        }
+
+        return Math.max(1, (int) Math.round(targetWidth * (originalHeight / (double) originalWidth)));
+    }
+
+    private Image loadFishImage(Fish f) {
+        String directionLetter = f.getDirection().equals("left") ? "L" : "R";
+        String imagePrefix = f.isPlayer() ? "playerFish" : "fish";
+        String filename = "images/" + imagePrefix + f.getFishType() + directionLetter + ".png";
         try {
             java.net.URL url = getClass().getResource(filename);
             if (url != null) {
