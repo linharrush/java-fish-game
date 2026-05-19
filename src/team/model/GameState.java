@@ -38,4 +38,10 @@ public class GameState {
     public void setMode(GameMode mode) {
         this.mode = mode;
     }
+
+    public void reset() {
+        canvas.initCanvas();
+        levelProgress.reset();
+        mode = GameMode.MAIN_MENU;
+    }
 }

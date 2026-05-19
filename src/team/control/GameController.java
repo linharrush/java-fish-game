@@ -17,6 +17,9 @@ public class GameController {
     }
 
     public void startGame(int selectedSkin) {
+        gameUiPort().clearFish();
+        gameState.reset();
+
         PlayerFish playerFish = gameState.getPlayerFish();
         if (playerFish != null) {
             playerFish.setSelectedSkin(selectedSkin);
