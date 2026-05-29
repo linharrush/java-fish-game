@@ -87,6 +87,10 @@ public class CollisionController {
                 gameUiPort().updateScore(
                         gameState.getLevelProgress().getCurrentPoints(),
                         gameState.getLevelProgress().getNextLevelThreshold());
+                if (gameState.getLevelProgress().hasCompletedAllLevels()) {
+                    App.content().gameController().playerWon();
+                    return;
+                }
             }
         }
     }

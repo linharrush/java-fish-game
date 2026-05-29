@@ -10,12 +10,18 @@ import team.model.Fish;
 import team.model.LevelProgress;
 
 public class DrawingPanel extends JPanel {
+    private static final int LEVEL_IMAGE_WIDTH = 190;
+    private static final int LEVEL_PULSE_FRAMES = 18;
+    private static final int LEVEL_PULSE_DELAY_MS = 25;
+    private static final double LEVEL_PULSE_SCALE = 1.22;
+
     private Map<String, Fish> fish;
     private MainRouter mainRouter;
     private String draggedFishId;
     private Image backgroundImage;
     private JProgressBar scoreProgressBar;
     private JLabel levelImageLabel;
+    private Timer levelPulseTimer;
 
     public DrawingPanel(Map<String, Fish> fish, MainRouter mainRouter) {
         this.fish = fish;
@@ -75,7 +81,7 @@ public class DrawingPanel extends JPanel {
     private JPanel createLevelPanel() {
         JPanel levelPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 12));
         levelPanel.setOpaque(false);
-        levelImageLabel = createImageLabel(getLevelImageName(LevelProgress.DEFAULT_INITIAL_LEVEL), 190);
+        levelImageLabel = createImageLabel(getLevelImageName(LevelProgress.DEFAULT_INITIAL_LEVEL), LEVEL_IMAGE_WIDTH);
         levelPanel.add(levelImageLabel);
         return levelPanel;
     }
@@ -225,11 +231,37 @@ public class DrawingPanel extends JPanel {
     }
 
     public void updateLevel(int level) {
-        levelImageLabel.setIcon(loadImageIcon(getLevelImageName(level), 190));
+        String levelImageName = getLevelImageName(level);
+        levelImageLabel.setIcon(loadImageIcon(levelImageName, LEVEL_IMAGE_WIDTH));
+        playLevelPulse(levelImageName);
     }
 
     private String getLevelImageName(int level) {
         return "images/level" + level + ".png";
+    }
+
+    private void playLevelPulse(String levelImageName) {
+        if (levelPulseTimer != null && levelPulseTimer.isRunning()) {
+            levelPulseTimer.stop();
+        }
+
+        final int[] frame = {0};
+        levelPulseTimer = new Timer(LEVEL_PULSE_DELAY_MS, e -> {
+            double progress = frame[0] / (double) LEVEL_PULSE_FRAMES;
+            double pulse = Math.sin(progress * Math.PI);
+            int animatedWidth = (int) Math.round(LEVEL_IMAGE_WIDTH * (1.0 + (LEVEL_PULSE_SCALE - 1.0) * pulse));
+
+            levelImageLabel.setIcon(loadImageIcon(levelImageName, animatedWidth));
+            levelImageLabel.revalidate();
+            levelImageLabel.repaint();
+
+            frame[0]++;
+            if (frame[0] > LEVEL_PULSE_FRAMES) {
+                ((Timer) e.getSource()).stop();
+                levelImageLabel.setIcon(loadImageIcon(levelImageName, LEVEL_IMAGE_WIDTH));
+            }
+        });
+        levelPulseTimer.start();
     }
 
     private void handleMousePressed(MouseEvent e) {

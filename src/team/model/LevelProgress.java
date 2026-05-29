@@ -77,6 +77,10 @@ public class LevelProgress {
         return currentPoints >= getNextLevelThreshold();
     }
 
+    public boolean hasCompletedAllLevels() {
+        return currentLevel >= maxLevel && hasReachedThreshold();
+    }
+
     public int advanceLevelIfThresholdReached() {
         int previousLevel = currentLevel;
 

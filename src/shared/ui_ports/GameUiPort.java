@@ -20,6 +20,7 @@ public abstract class GameUiPort {
     public abstract void showMainMenu();
     public abstract void showGameScreen();
     public abstract void showLoseScreen();
+    public abstract void showWinScreen();
     public abstract void log(String message);
 
     public abstract void addFish(int id, double x, double y, double size, boolean isPlayer, int fishType, String direction);

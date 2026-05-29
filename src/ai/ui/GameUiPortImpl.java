@@ -12,6 +12,7 @@ public class GameUiPortImpl extends GameUiPort {
     private Runnable showMainMenuAction;
     private Runnable showGameScreenAction;
     private Runnable showLoseScreenAction;
+    private Runnable showWinScreenAction;
 
     public GameUiPortImpl(
             Map<String, Fish> fish,
@@ -19,13 +20,15 @@ public class GameUiPortImpl extends GameUiPort {
             VideoBackgroundPanel backgroundPanel,
             Runnable showMainMenuAction,
             Runnable showGameScreenAction,
-            Runnable showLoseScreenAction) {
+            Runnable showLoseScreenAction,
+            Runnable showWinScreenAction) {
         this.fish = fish;
         this.panel = panel;
         this.backgroundPanel = backgroundPanel;
         this.showMainMenuAction = showMainMenuAction;
         this.showGameScreenAction = showGameScreenAction;
         this.showLoseScreenAction = showLoseScreenAction;
+        this.showWinScreenAction = showWinScreenAction;
     }
 
     @Override
@@ -51,6 +54,11 @@ public class GameUiPortImpl extends GameUiPort {
     @Override
     public void showLoseScreen() {
         showLoseScreenAction.run();
+    }
+
+    @Override
+    public void showWinScreen() {
+        showWinScreenAction.run();
     }
 
     @Override

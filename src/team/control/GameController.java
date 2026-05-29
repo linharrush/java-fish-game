@@ -38,6 +38,11 @@ public class GameController {
         gameUiPort().showLoseScreen();
     }
 
+    public void playerWon() {
+        gameState.setMode(GameMode.WON);
+        gameUiPort().showWinScreen();
+    }
+
     public void showMainMenu() {
         gameState.setMode(GameMode.MAIN_MENU);
         gameUiPort().showMainMenu();
