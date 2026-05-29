@@ -11,8 +11,7 @@ public class MyPeriodicLoop extends PeriodicLoop {
 		// Let the super class do its work first
 		super.execute();		
 		// Then do your own work here ...
-		content.oceanGameBackend().moveFishByIndex(1, 10, 0);
-		content.oceanGameBackend().moveFishByIndex(2, -5, 0);
+		content.oceanGameBackend().updateAutomaticFish();
 
 	}
 

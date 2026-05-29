@@ -12,6 +12,7 @@ public class GameUiPortImpl extends GameUiPort {
     private Runnable showMainMenuAction;
     private Runnable showGameScreenAction;
     private Runnable showLoseScreenAction;
+    private Runnable showWinScreenAction;
 
     public GameUiPortImpl(
             Map<String, Fish> fish,
@@ -19,13 +20,15 @@ public class GameUiPortImpl extends GameUiPort {
             VideoBackgroundPanel backgroundPanel,
             Runnable showMainMenuAction,
             Runnable showGameScreenAction,
-            Runnable showLoseScreenAction) {
+            Runnable showLoseScreenAction,
+            Runnable showWinScreenAction) {
         this.fish = fish;
         this.panel = panel;
         this.backgroundPanel = backgroundPanel;
         this.showMainMenuAction = showMainMenuAction;
         this.showGameScreenAction = showGameScreenAction;
         this.showLoseScreenAction = showLoseScreenAction;
+        this.showWinScreenAction = showWinScreenAction;
     }
 
     @Override
@@ -51,6 +54,11 @@ public class GameUiPortImpl extends GameUiPort {
     @Override
     public void showLoseScreen() {
         showLoseScreenAction.run();
+    }
+
+    @Override
+    public void showWinScreen() {
+        showWinScreenAction.run();
     }
 
     @Override
@@ -108,6 +116,32 @@ public class GameUiPortImpl extends GameUiPort {
 
             f.getCenter().setX(x);
             f.getCenter().setY(y);
+            panel.repaint();
+        }
+    }
+
+    @Override
+    public void growPlayerFish(int id, double growthAmount) {
+        Fish f = fish.get(String.valueOf(id));
+
+        if (f != null && growthAmount > 0) {
+            f.setSize(f.getSize() + growthAmount);
+            panel.repaint();
+        }
+    }
+
+    @Override
+    public void updateLevel(int level) {
+        if (panel instanceof DrawingPanel) {
+            ((DrawingPanel) panel).updateLevel(level);
+            panel.repaint();
+        }
+    }
+
+    @Override
+    public void updateScore(int score, int targetScore) {
+        if (panel instanceof DrawingPanel) {
+            ((DrawingPanel) panel).updateScore(score, targetScore);
             panel.repaint();
         }
     }

@@ -20,11 +20,15 @@ public abstract class GameUiPort {
     public abstract void showMainMenu();
     public abstract void showGameScreen();
     public abstract void showLoseScreen();
+    public abstract void showWinScreen();
     public abstract void log(String message);
 
     public abstract void addFish(int id, double x, double y, double size, boolean isPlayer, int fishType, String direction);
     public abstract void updateFish(int id, double x, double y, double size, int fishType, String direction);
     public abstract void updatePlayerPosition(int id, double x, double y);
+    public abstract void growPlayerFish(int id, double growthAmount);
+    public abstract void updateLevel(int level);
+    public abstract void updateScore(int score, int targetScore);
     public abstract void removeFish(int id);
     public abstract void clearFish();
 }

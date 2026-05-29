@@ -26,12 +26,21 @@ public class GameController {
         }
 
         gameState.setMode(GameMode.PLAYING);
+        gameUiPort().updateLevel(gameState.getLevelProgress().getCurrentLevel());
+        gameUiPort().updateScore(
+                gameState.getLevelProgress().getCurrentPoints(),
+                gameState.getLevelProgress().getNextLevelThreshold());
         gameUiPort().showGameScreen();
     }
 
     public void playerLost() {
         gameState.setMode(GameMode.LOST);
         gameUiPort().showLoseScreen();
+    }
+
+    public void playerWon() {
+        gameState.setMode(GameMode.WON);
+        gameUiPort().showWinScreen();
     }
 
     public void showMainMenu() {

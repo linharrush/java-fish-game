@@ -23,7 +23,7 @@ public class AppContent {
 	
 	public void initContent() {
 		canvas.initCanvas();
-		gameState = new GameState(canvas, new LevelProgress(1, 0, 100, 5));
+		gameState = new GameState(canvas, new LevelProgress());
 		gameController = new GameController(gameState);
 		movementController = new MovementController(gameState);
 		collisionController = new CollisionController(gameState);

@@ -12,6 +12,7 @@ public class Ui {
     private static final String MAIN_MENU_CARD = "mainMenu";
     private static final String GAME_CARD = "game";
     private static final String LOSE_CARD = "lose";
+    private static final String WIN_CARD = "win";
 
     private MainRouter mainRouter;
     private Map<String, Fish> fish = new HashMap<>();
@@ -44,11 +45,14 @@ public class Ui {
         VideoBackgroundPanel menuBackgroundPanel = new VideoBackgroundPanel(mainMenuPanel);
         LoseScreenPanel loseScreenPanel = new LoseScreenPanel(mainRouter);
         VideoBackgroundPanel loseBackgroundPanel = new VideoBackgroundPanel(loseScreenPanel);
+        WinScreenPanel winScreenPanel = new WinScreenPanel(mainRouter);
+        VideoBackgroundPanel winBackgroundPanel = new VideoBackgroundPanel(winScreenPanel);
         cardLayout = new CardLayout();
         cardsPanel = new JPanel(cardLayout);
         cardsPanel.add(menuBackgroundPanel, MAIN_MENU_CARD);
         cardsPanel.add(backgroundPanel, GAME_CARD);
         cardsPanel.add(loseBackgroundPanel, LOSE_CARD);
+        cardsPanel.add(winBackgroundPanel, WIN_CARD);
         frame.add(cardsPanel, BorderLayout.CENTER);
 
         frame.setVisible(true);
@@ -57,6 +61,7 @@ public class Ui {
         menuBackgroundPanel.setBackgroundVideo("images/ocean_background.mp4");
         backgroundPanel.setBackgroundVideo("images/ocean_background.mp4");
         loseBackgroundPanel.setBackgroundVideo("images/ocean_background.mp4");
+        winBackgroundPanel.setBackgroundVideo("images/ocean_background.mp4");
 
         uiInstance = new GameUiPortImpl(
                 fish,
@@ -64,7 +69,8 @@ public class Ui {
                 backgroundPanel,
                 () -> cardLayout.show(cardsPanel, MAIN_MENU_CARD),
                 () -> cardLayout.show(cardsPanel, GAME_CARD),
-                () -> cardLayout.show(cardsPanel, LOSE_CARD));
+                () -> cardLayout.show(cardsPanel, LOSE_CARD),
+                () -> cardLayout.show(cardsPanel, WIN_CARD));
         shared.ui_ports.GameUiPort.setInstance(uiInstance);
     }
 
