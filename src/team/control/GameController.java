@@ -26,6 +26,10 @@ public class GameController {
         }
 
         gameState.setMode(GameMode.PLAYING);
+        gameUiPort().updateLevel(gameState.getLevelProgress().getCurrentLevel());
+        gameUiPort().updateScore(
+                gameState.getLevelProgress().getCurrentPoints(),
+                gameState.getLevelProgress().getNextLevelThreshold());
         gameUiPort().showGameScreen();
     }
 

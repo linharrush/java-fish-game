@@ -74,11 +74,19 @@ public class CollisionController {
                 App.content().gameController().playerLost();
                 return;
             } else if (canPlayerEat(otherFish)) {
-                System.out.println("Points before eating: " + gameState.getLevelProgress().getCurrentPoints());
                 gameState.removeFish(i);
                 gameState.getLevelProgress().addPoints((int) otherFish.getSize());
-                System.out.println("Points after eating: " + gameState.getLevelProgress().getCurrentPoints());
+                int levelsGained = gameState.getLevelProgress().advanceLevelIfThresholdReached();
+                double growthAmount = playerFish.getGrowthAmountForLevels(levelsGained);
+                playerFish.growByLevels(levelsGained);
                 gameUiPort().removeFish(otherFish.getId());
+                gameUiPort().growPlayerFish(playerFish.getId(), growthAmount);
+                if (levelsGained > 0) {
+                    gameUiPort().updateLevel(gameState.getLevelProgress().getCurrentLevel());
+                }
+                gameUiPort().updateScore(
+                        gameState.getLevelProgress().getCurrentPoints(),
+                        gameState.getLevelProgress().getNextLevelThreshold());
             }
         }
     }

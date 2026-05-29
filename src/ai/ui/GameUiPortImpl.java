@@ -113,6 +113,32 @@ public class GameUiPortImpl extends GameUiPort {
     }
 
     @Override
+    public void growPlayerFish(int id, double growthAmount) {
+        Fish f = fish.get(String.valueOf(id));
+
+        if (f != null && growthAmount > 0) {
+            f.setSize(f.getSize() + growthAmount);
+            panel.repaint();
+        }
+    }
+
+    @Override
+    public void updateLevel(int level) {
+        if (panel instanceof DrawingPanel) {
+            ((DrawingPanel) panel).updateLevel(level);
+            panel.repaint();
+        }
+    }
+
+    @Override
+    public void updateScore(int score, int targetScore) {
+        if (panel instanceof DrawingPanel) {
+            ((DrawingPanel) panel).updateScore(score, targetScore);
+            panel.repaint();
+        }
+    }
+
+    @Override
     public void removeFish(int id) {
         fish.remove(String.valueOf(id));
         panel.repaint();
