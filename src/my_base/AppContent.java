@@ -1,12 +1,12 @@
 package my_base;
 
 import java.util.Random;
-import team.control.OceanGameBackend;
 import team.control.MovementController;
 import team.control.CollisionController;
 import team.control.DifficultyController;
 import team.control.FishMovementController;
 import team.control.GameController;
+import team.control.GameLoopController;
 import team.control.SpawnController;
 import team.model.Canvas;
 import team.model.GameState;
@@ -27,7 +27,7 @@ public class AppContent {
 	private MovementController movementController;
 	private CollisionController collisionController;
 	private GameController gameController;
-	private OceanGameBackend oceanGameBackend;
+	private GameLoopController gameLoopController;
 	
 	public void initContent() {
 		canvas.initCanvas();
@@ -38,7 +38,7 @@ public class AppContent {
 		fishMovementController = new FishMovementController(gameState);
 		movementController = new MovementController(gameState);
 		collisionController = new CollisionController(gameState, gameController);
-		oceanGameBackend = new OceanGameBackend(gameState, fishMovementController, spawnController);
+		gameLoopController = new GameLoopController(gameState, fishMovementController, spawnController);
 	};
 
 	public Canvas canvas() {
@@ -68,8 +68,8 @@ public class AppContent {
 		return fishMovementController;
 	}
 
-	public OceanGameBackend oceanGameBackend() {
-		return oceanGameBackend;
+	public GameLoopController gameLoopController() {
+		return gameLoopController;
 	}
 
 }

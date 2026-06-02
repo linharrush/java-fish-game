@@ -11,7 +11,7 @@ public class MyPeriodicLoop extends PeriodicLoop {
 		// Let the super class do its work first
 		super.execute();		
 		// Then do your own work here ...
-		content.oceanGameBackend().updateAutomaticFish();
+		content.gameLoopController().updateAutomaticFish();
 
 	}
 

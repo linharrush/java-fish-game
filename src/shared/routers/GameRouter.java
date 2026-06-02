@@ -4,15 +4,12 @@ import base.Params;
 import base.SubRouter;
 import my_base.App;
 import team.control.MovementController;
-import team.control.OceanGameBackend;
 
 public class GameRouter implements SubRouter {
 
-    private final OceanGameBackend backend;
     private final MovementController movementController;
 
     public GameRouter() {
-        this.backend = App.content().oceanGameBackend();
         this.movementController = App.content().movementController();
     }
 
@@ -45,18 +42,7 @@ public class GameRouter implements SubRouter {
             }
 
             case "/periodic": {
-                backend.toggleRunPeriodic();
-                return null;
-            }
-
-
-            case "/oceanView": {
-                backend.oceanView();
-                return null;
-            }
-
-            case "/normalView": {
-                backend.normalView();
+                App.content().gameLoopController().toggleRunPeriodic();
                 return null;
             }
 
