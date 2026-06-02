@@ -6,10 +6,8 @@ import team.model.GameMode;
 import team.model.GameState;
 
 public class OceanGameBackend {
-    private static final int SCREEN_WIDTH = 800;
-    private static final int OFFSCREEN_MARGIN = 120;
-
     private final GameState gameState;
+    private final FishMovementController fishMovementController;
     private final SpawnController spawnController;
 
     private GameUiPort gameUiPort() {
@@ -19,15 +17,22 @@ public class OceanGameBackend {
     private boolean runPeriodic = true;
     private boolean oceanViewState = false;
 
-    public OceanGameBackend(GameState gameState, SpawnController spawnController) {
+    public OceanGameBackend(
+            GameState gameState,
+            FishMovementController fishMovementController,
+            SpawnController spawnController) {
         if (gameState == null) {
             throw new IllegalArgumentException("GameState cannot be null");
+        }
+        if (fishMovementController == null) {
+            throw new IllegalArgumentException("FishMovementController cannot be null");
         }
         if (spawnController == null) {
             throw new IllegalArgumentException("SpawnController cannot be null");
         }
 
         this.gameState = gameState;
+        this.fishMovementController = fishMovementController;
         this.spawnController = spawnController;
     }
 
@@ -50,19 +55,7 @@ public class OceanGameBackend {
     }
 
     public void moveFish(int fishId, double x, double y) {
-        int index = getFishIndexById(gameState, fishId);
-        if (index < 0 || index >= gameState.getFishCount()) {
-            return;
-        }
-
-        Fish f = gameState.getFish(index);
-        if (f == null) {
-            return;
-        }
-
-        f.getCenter().setX(x);
-        f.getCenter().setY(y);
-        gameUiPort().updateFish(fishId, x, y, f.getSize(), f.getFishType(), f.getDirection());
+        fishMovementController.moveFish(fishId, x, y);
     }
 
     public void moveFishByIndex(int index, double dx, double dy) {
@@ -70,10 +63,7 @@ public class OceanGameBackend {
             return;
         }
 
-        Fish f = gameState.getFish(index);
-        if (f != null) {
-            moveFish(f.getId(), f.getCenter().getX() + dx, f.getCenter().getY() + dy);
-        }
+        fishMovementController.moveFishByIndex(index, dx, dy);
     }
 
     public void updateAutomaticFish() {
@@ -81,49 +71,8 @@ public class OceanGameBackend {
             return;
         }
 
-        moveNonPlayerFish();
+        fishMovementController.moveNonPlayerFish();
         spawnController.spawnFishIfNeeded();
-    }
-
-    private void moveNonPlayerFish() {
-        for (int i = 0; i < gameState.getFishCount(); i++) {
-            Fish f = gameState.getFish(i);
-            if (f == null || f.isPlayer()) {
-                continue;
-            }
-
-            double dx = getSwimSpeed(f);
-            if ("left".equals(f.getDirection())) {
-                dx = -dx;
-            }
-
-            double nextX = f.getCenter().getX() + dx;
-            if (isOffscreen(nextX)) {
-                gameUiPort().removeFish(f.getId());
-                gameState.removeFish(i);
-            } else {
-                moveFish(f.getId(), nextX, f.getCenter().getY());
-            }
-        }
-    }
-
-    private double getSwimSpeed(Fish fish) {
-        return Math.max(4.0, 14.0 - fish.getSize() / 30.0);
-    }
-
-    private boolean isOffscreen(double x) {
-        return x < -OFFSCREEN_MARGIN || x > SCREEN_WIDTH + OFFSCREEN_MARGIN;
-    }
-
-    private int getFishIndexById(GameState gameState, int fishId) {
-        for (int i = 0; i < gameState.getFishCount(); i++) {
-            Fish f = gameState.getFish(i);
-            if (f != null && f.getId() == fishId) {
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     public void toggleRunPeriodic() {

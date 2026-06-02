@@ -5,6 +5,7 @@ import team.control.OceanGameBackend;
 import team.control.MovementController;
 import team.control.CollisionController;
 import team.control.DifficultyController;
+import team.control.FishMovementController;
 import team.control.GameController;
 import team.control.SpawnController;
 import team.model.Canvas;
@@ -22,6 +23,7 @@ public class AppContent {
 	private GameState gameState;
 	private DifficultyController difficultyController;
 	private SpawnController spawnController;
+	private FishMovementController fishMovementController;
 	private MovementController movementController;
 	private CollisionController collisionController;
 	private GameController gameController;
@@ -33,9 +35,10 @@ public class AppContent {
 		gameController = new GameController(gameState);
 		difficultyController = new DifficultyController(random);
 		spawnController = new SpawnController(gameState, difficultyController, random);
+		fishMovementController = new FishMovementController(gameState);
 		movementController = new MovementController(gameState);
 		collisionController = new CollisionController(gameState);
-		oceanGameBackend = new OceanGameBackend(gameState, spawnController);
+		oceanGameBackend = new OceanGameBackend(gameState, fishMovementController, spawnController);
 	};
 
 	public Canvas canvas() {
@@ -59,6 +62,10 @@ public class AppContent {
 
 	public SpawnController spawnController() {
 		return spawnController;
+	}
+
+	public FishMovementController fishMovementController() {
+		return fishMovementController;
 	}
 
 	public OceanGameBackend oceanGameBackend() {
