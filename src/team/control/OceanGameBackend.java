@@ -4,9 +4,10 @@ import base.PeriodicLoop;
 import java.util.Random;
 import my_base.App;
 import shared.ui_ports.GameUiPort;
-import team.model.GameState;
+import team.control.DifficultyController.FishSpawnProfile;
 import team.model.Fish;
 import team.model.GameMode;
+import team.model.GameState;
 import team.model.LevelProgress;
 
 public class OceanGameBackend {
@@ -19,6 +20,7 @@ public class OceanGameBackend {
     private static final int OFFSCREEN_MARGIN = 120;
 
     private final Random random = new Random();
+    private final DifficultyController difficultyController = new DifficultyController(random);
     private long lastSpawnTime = -SPAWN_INTERVAL_MS;
 
     private GameUiPort gameUiPort() {
@@ -133,60 +135,22 @@ public class OceanGameBackend {
     private Fish createRandomFishForCurrentLevel(GameState gameState) {
         LevelProgress levelProgress = App.content().gameState().getLevelProgress();
         int level = levelProgress.getCurrentLevel();
-        FishSizeCategory category = chooseSizeCategory(level, levelProgress.getMaxLevel());
         boolean fromLeft = random.nextBoolean();
         String direction = fromLeft ? "right" : "left";
         int x = fromLeft ? -SPAWN_MARGIN : SCREEN_WIDTH + SPAWN_MARGIN;
         int y = MIN_SWIM_Y + random.nextInt(MAX_SWIM_Y - MIN_SWIM_Y + 1);
-        int fishType = getFishType(category);
-        int size = getFishSize(category);
+        FishSpawnProfile profile = difficultyController.createFishSpawnProfile(
+                level,
+                levelProgress.getMaxLevel());
 
-        return new Fish(gameState.getNextFishId(), x, y, size, false, fishType, direction);
-    }
-
-    private FishSizeCategory chooseSizeCategory(int currentLevel, int maxLevel) {
-        int levelIndex = Math.max(0, currentLevel - 1);
-        int maxLevelIndex = Math.max(1, maxLevel - 1);
-        double difficulty = Math.min(1.0, levelIndex / (double) maxLevelIndex);
-        double smallChance = 0.60 - 0.35 * difficulty;
-        double mediumChance = 0.25;
-        double roll = random.nextDouble();
-
-        if (roll < smallChance) {
-            return FishSizeCategory.SMALL;
-        }
-
-        if (roll < smallChance + mediumChance) {
-            return FishSizeCategory.MEDIUM;
-        }
-
-        return FishSizeCategory.LARGE;
-    }
-
-    private int getFishType(FishSizeCategory category) {
-        switch (category) {
-            case SMALL:
-                return 1 + random.nextInt(2);
-            case MEDIUM:
-                return 3 + random.nextInt(2);
-            case LARGE:
-                return 5 + random.nextInt(2);
-            default:
-                throw new IllegalArgumentException("Unknown fish size category");
-        }
-    }
-
-    private int getFishSize(FishSizeCategory category) {
-        switch (category) {
-            case SMALL:
-                return 45 + random.nextInt(36);
-            case MEDIUM:
-                return 95 + random.nextInt(56);
-            case LARGE:
-                return 180 + random.nextInt(101);
-            default:
-                throw new IllegalArgumentException("Unknown fish size category");
-        }
+        return new Fish(
+                gameState.getNextFishId(),
+                x,
+                y,
+                profile.getSize(),
+                false,
+                profile.getFishType(),
+                direction);
     }
 
     private double getSwimSpeed(Fish fish) {
@@ -226,9 +190,4 @@ public class OceanGameBackend {
         return oceanViewState;
     }
 
-    private enum FishSizeCategory {
-        SMALL,
-        MEDIUM,
-        LARGE
-    }
 }
