@@ -23,8 +23,20 @@ public class GameState {
         canvas.removeFish(index);
     }
 
+    public void addFish(Fish fish) {
+        canvas.addFish(fish);
+    }
+
     public int getFishCount() {
         return canvas.getFishCount();
+    }
+
+    public int getNextFishId() {
+        return canvas.getNextFishId();
+    }
+
+    public int getActiveNonPlayerFishCount() {
+        return canvas.getActiveNonPlayerFishCount();
     }
 
     public LevelProgress getLevelProgress() {

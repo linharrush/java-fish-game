@@ -4,7 +4,7 @@ import base.PeriodicLoop;
 import java.util.Random;
 import my_base.App;
 import shared.ui_ports.GameUiPort;
-import team.model.Canvas;
+import team.model.GameState;
 import team.model.Fish;
 import team.model.GameMode;
 import team.model.LevelProgress;
@@ -29,11 +29,11 @@ public class OceanGameBackend {
     private boolean oceanViewState = false;
 
     public void startScenario() {
-        Canvas canvas = App.content().canvas();
+        GameState gameState = App.content().gameState();
         lastSpawnTime = -SPAWN_INTERVAL_MS;
 
-        for (int i = 0; i < canvas.getFishCount(); i++) {
-            Fish f = canvas.getFish(i);
+        for (int i = 0; i < gameState.getFishCount(); i++) {
+            Fish f = gameState.getFish(i);
             gameUiPort().addFish(
                     f.getId(),
                     f.getCenter().getX(),
@@ -48,13 +48,13 @@ public class OceanGameBackend {
     }
 
     public void moveFish(int fishId, double x, double y) {
-        Canvas canvas = App.content().canvas();
-        int index = getFishIndexById(canvas, fishId);
-        if (index < 0 || index >= canvas.getFishCount()) {
+        GameState gameState = App.content().gameState();
+        int index = getFishIndexById(gameState, fishId);
+        if (index < 0 || index >= gameState.getFishCount()) {
             return;
         }
 
-        Fish f = canvas.getFish(index);
+        Fish f = gameState.getFish(index);
         if (f == null) {
             return;
         }
@@ -69,7 +69,7 @@ public class OceanGameBackend {
             return;
         }
 
-        Fish f = App.content().canvas().getFish(index);
+        Fish f = App.content().gameState().getFish(index);
         if (f != null) {
             moveFish(f.getId(), f.getCenter().getX() + dx, f.getCenter().getY() + dy);
         }
@@ -85,10 +85,10 @@ public class OceanGameBackend {
     }
 
     private void moveNonPlayerFish() {
-        Canvas canvas = App.content().canvas();
+        GameState gameState = App.content().gameState();
 
-        for (int i = 0; i < canvas.getFishCount(); i++) {
-            Fish f = canvas.getFish(i);
+        for (int i = 0; i < gameState.getFishCount(); i++) {
+            Fish f = gameState.getFish(i);
             if (f == null || f.isPlayer()) {
                 continue;
             }
@@ -101,7 +101,7 @@ public class OceanGameBackend {
             double nextX = f.getCenter().getX() + dx;
             if (isOffscreen(nextX)) {
                 gameUiPort().removeFish(f.getId());
-                canvas.removeFish(i);
+                gameState.removeFish(i);
             } else {
                 moveFish(f.getId(), nextX, f.getCenter().getY());
             }
@@ -110,15 +110,15 @@ public class OceanGameBackend {
 
     private void spawnFishIfNeeded() {
         long now = PeriodicLoop.elapsedTime();
-        Canvas canvas = App.content().canvas();
+        GameState gameState = App.content().gameState();
 
         if (now - lastSpawnTime < SPAWN_INTERVAL_MS
-                || canvas.getActiveNonPlayerFishCount() >= MAX_NON_PLAYER_FISH) {
+                || gameState.getActiveNonPlayerFishCount() >= MAX_NON_PLAYER_FISH) {
             return;
         }
 
-        Fish spawnedFish = createRandomFishForCurrentLevel(canvas);
-        canvas.addFish(spawnedFish);
+        Fish spawnedFish = createRandomFishForCurrentLevel(gameState);
+        gameState.addFish(spawnedFish);
         gameUiPort().addFish(
                 spawnedFish.getId(),
                 spawnedFish.getCenter().getX(),
@@ -130,7 +130,7 @@ public class OceanGameBackend {
         lastSpawnTime = now;
     }
 
-    private Fish createRandomFishForCurrentLevel(Canvas canvas) {
+    private Fish createRandomFishForCurrentLevel(GameState gameState) {
         LevelProgress levelProgress = App.content().gameState().getLevelProgress();
         int level = levelProgress.getCurrentLevel();
         FishSizeCategory category = chooseSizeCategory(level, levelProgress.getMaxLevel());
@@ -141,7 +141,7 @@ public class OceanGameBackend {
         int fishType = getFishType(category);
         int size = getFishSize(category);
 
-        return new Fish(canvas.getNextFishId(), x, y, size, false, fishType, direction);
+        return new Fish(gameState.getNextFishId(), x, y, size, false, fishType, direction);
     }
 
     private FishSizeCategory chooseSizeCategory(int currentLevel, int maxLevel) {
@@ -197,9 +197,9 @@ public class OceanGameBackend {
         return x < -OFFSCREEN_MARGIN || x > SCREEN_WIDTH + OFFSCREEN_MARGIN;
     }
 
-    private int getFishIndexById(Canvas canvas, int fishId) {
-        for (int i = 0; i < canvas.getFishCount(); i++) {
-            Fish f = canvas.getFish(i);
+    private int getFishIndexById(GameState gameState, int fishId) {
+        for (int i = 0; i < gameState.getFishCount(); i++) {
+            Fish f = gameState.getFish(i);
             if (f != null && f.getId() == fishId) {
                 return i;
             }
