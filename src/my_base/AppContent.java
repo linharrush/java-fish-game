@@ -32,9 +32,9 @@ public class AppContent {
 	public void initContent() {
 		canvas.initCanvas();
 		gameState = new GameState(canvas, new LevelProgress());
-		gameController = new GameController(gameState);
 		difficultyController = new DifficultyController(random);
 		spawnController = new SpawnController(gameState, difficultyController, random);
+		gameController = new GameController(gameState, spawnController);
 		fishMovementController = new FishMovementController(gameState);
 		movementController = new MovementController(gameState);
 		collisionController = new CollisionController(gameState);

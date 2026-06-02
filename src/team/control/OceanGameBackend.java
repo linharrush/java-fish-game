@@ -1,7 +1,6 @@
 package team.control;
 
 import shared.ui_ports.GameUiPort;
-import team.model.Fish;
 import team.model.GameMode;
 import team.model.GameState;
 
@@ -34,24 +33,6 @@ public class OceanGameBackend {
         this.gameState = gameState;
         this.fishMovementController = fishMovementController;
         this.spawnController = spawnController;
-    }
-
-    public void startScenario() {
-        spawnController.resetSpawnTimer();
-
-        for (int i = 0; i < gameState.getFishCount(); i++) {
-            Fish f = gameState.getFish(i);
-            gameUiPort().addFish(
-                    f.getId(),
-                    f.getCenter().getX(),
-                    f.getCenter().getY(),
-                    f.getSize(),
-                    f.isPlayer(),
-                    f.getFishType(),
-                    f.getDirection());
-        }
-
-        gameUiPort().log("Scenario started.");
     }
 
     public void moveFish(int fishId, double x, double y) {

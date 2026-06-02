@@ -26,7 +26,6 @@ public class GameRouter implements SubRouter {
             case "/start": {
                 int selectedSkin = p.getInt(0);
                 App.content().gameController().startGame(selectedSkin);
-                backend.startScenario();
                 return null;
             }
 
