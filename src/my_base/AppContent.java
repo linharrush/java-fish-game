@@ -37,7 +37,7 @@ public class AppContent {
 		gameController = new GameController(gameState, spawnController);
 		fishMovementController = new FishMovementController(gameState);
 		movementController = new MovementController(gameState);
-		collisionController = new CollisionController(gameState);
+		collisionController = new CollisionController(gameState, gameController);
 		oceanGameBackend = new OceanGameBackend(gameState, fishMovementController, spawnController);
 	};
 
