@@ -1,27 +1,16 @@
 package team.control;
 
-import base.PeriodicLoop;
-import java.util.Random;
-import my_base.App;
 import shared.ui_ports.GameUiPort;
-import team.control.DifficultyController.FishSpawnProfile;
 import team.model.Fish;
 import team.model.GameMode;
 import team.model.GameState;
-import team.model.LevelProgress;
 
 public class OceanGameBackend {
-    private static final int MAX_NON_PLAYER_FISH = 15;
-    private static final int SPAWN_INTERVAL_MS = 600;
     private static final int SCREEN_WIDTH = 800;
-    private static final int SPAWN_MARGIN = 80;
-    private static final int MIN_SWIM_Y = 70;
-    private static final int MAX_SWIM_Y = 530;
     private static final int OFFSCREEN_MARGIN = 120;
 
-    private final Random random = new Random();
-    private final DifficultyController difficultyController = new DifficultyController(random);
-    private long lastSpawnTime = -SPAWN_INTERVAL_MS;
+    private final GameState gameState;
+    private final SpawnController spawnController;
 
     private GameUiPort gameUiPort() {
         return GameUiPort.getInstance();
@@ -30,9 +19,20 @@ public class OceanGameBackend {
     private boolean runPeriodic = true;
     private boolean oceanViewState = false;
 
+    public OceanGameBackend(GameState gameState, SpawnController spawnController) {
+        if (gameState == null) {
+            throw new IllegalArgumentException("GameState cannot be null");
+        }
+        if (spawnController == null) {
+            throw new IllegalArgumentException("SpawnController cannot be null");
+        }
+
+        this.gameState = gameState;
+        this.spawnController = spawnController;
+    }
+
     public void startScenario() {
-        GameState gameState = App.content().gameState();
-        lastSpawnTime = -SPAWN_INTERVAL_MS;
+        spawnController.resetSpawnTimer();
 
         for (int i = 0; i < gameState.getFishCount(); i++) {
             Fish f = gameState.getFish(i);
@@ -50,7 +50,6 @@ public class OceanGameBackend {
     }
 
     public void moveFish(int fishId, double x, double y) {
-        GameState gameState = App.content().gameState();
         int index = getFishIndexById(gameState, fishId);
         if (index < 0 || index >= gameState.getFishCount()) {
             return;
@@ -71,24 +70,22 @@ public class OceanGameBackend {
             return;
         }
 
-        Fish f = App.content().gameState().getFish(index);
+        Fish f = gameState.getFish(index);
         if (f != null) {
             moveFish(f.getId(), f.getCenter().getX() + dx, f.getCenter().getY() + dy);
         }
     }
 
     public void updateAutomaticFish() {
-        if (!runPeriodic || App.content().gameState().getMode() != GameMode.PLAYING) {
+        if (!runPeriodic || gameState.getMode() != GameMode.PLAYING) {
             return;
         }
 
         moveNonPlayerFish();
-        spawnFishIfNeeded();
+        spawnController.spawnFishIfNeeded();
     }
 
     private void moveNonPlayerFish() {
-        GameState gameState = App.content().gameState();
-
         for (int i = 0; i < gameState.getFishCount(); i++) {
             Fish f = gameState.getFish(i);
             if (f == null || f.isPlayer()) {
@@ -108,49 +105,6 @@ public class OceanGameBackend {
                 moveFish(f.getId(), nextX, f.getCenter().getY());
             }
         }
-    }
-
-    private void spawnFishIfNeeded() {
-        long now = PeriodicLoop.elapsedTime();
-        GameState gameState = App.content().gameState();
-
-        if (now - lastSpawnTime < SPAWN_INTERVAL_MS
-                || gameState.getActiveNonPlayerFishCount() >= MAX_NON_PLAYER_FISH) {
-            return;
-        }
-
-        Fish spawnedFish = createRandomFishForCurrentLevel(gameState);
-        gameState.addFish(spawnedFish);
-        gameUiPort().addFish(
-                spawnedFish.getId(),
-                spawnedFish.getCenter().getX(),
-                spawnedFish.getCenter().getY(),
-                spawnedFish.getSize(),
-                spawnedFish.isPlayer(),
-                spawnedFish.getFishType(),
-                spawnedFish.getDirection());
-        lastSpawnTime = now;
-    }
-
-    private Fish createRandomFishForCurrentLevel(GameState gameState) {
-        LevelProgress levelProgress = App.content().gameState().getLevelProgress();
-        int level = levelProgress.getCurrentLevel();
-        boolean fromLeft = random.nextBoolean();
-        String direction = fromLeft ? "right" : "left";
-        int x = fromLeft ? -SPAWN_MARGIN : SCREEN_WIDTH + SPAWN_MARGIN;
-        int y = MIN_SWIM_Y + random.nextInt(MAX_SWIM_Y - MIN_SWIM_Y + 1);
-        FishSpawnProfile profile = difficultyController.createFishSpawnProfile(
-                level,
-                levelProgress.getMaxLevel());
-
-        return new Fish(
-                gameState.getNextFishId(),
-                x,
-                y,
-                profile.getSize(),
-                false,
-                profile.getFishType(),
-                direction);
     }
 
     private double getSwimSpeed(Fish fish) {

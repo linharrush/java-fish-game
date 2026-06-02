@@ -1,9 +1,12 @@
 package my_base;
 
+import java.util.Random;
 import team.control.OceanGameBackend;
 import team.control.MovementController;
 import team.control.CollisionController;
+import team.control.DifficultyController;
 import team.control.GameController;
+import team.control.SpawnController;
 import team.model.Canvas;
 import team.model.GameState;
 import team.model.LevelProgress;
@@ -15,7 +18,10 @@ import team.model.LevelProgress;
  */
 public class AppContent {
 	private Canvas canvas = new Canvas();
+	private Random random = new Random();
 	private GameState gameState;
+	private DifficultyController difficultyController;
+	private SpawnController spawnController;
 	private MovementController movementController;
 	private CollisionController collisionController;
 	private GameController gameController;
@@ -25,9 +31,11 @@ public class AppContent {
 		canvas.initCanvas();
 		gameState = new GameState(canvas, new LevelProgress());
 		gameController = new GameController(gameState);
+		difficultyController = new DifficultyController(random);
+		spawnController = new SpawnController(gameState, difficultyController, random);
 		movementController = new MovementController(gameState);
 		collisionController = new CollisionController(gameState);
-		oceanGameBackend = new OceanGameBackend();
+		oceanGameBackend = new OceanGameBackend(gameState, spawnController);
 	};
 
 	public Canvas canvas() {
@@ -47,6 +55,10 @@ public class AppContent {
 
 	public GameController gameController() {
 		return gameController;
+	}
+
+	public SpawnController spawnController() {
+		return spawnController;
 	}
 
 	public OceanGameBackend oceanGameBackend() {
