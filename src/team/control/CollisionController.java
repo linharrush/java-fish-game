@@ -1,7 +1,6 @@
 package team.control;
 
 import shared.ui_ports.GameUiPort;
-import my_base.App;
 import team.model.Fish;
 import team.model.GameState;
 import team.model.PlayerFish;
@@ -11,9 +10,18 @@ public class CollisionController {
     private static final double HITBOX_HEIGHT_RATIO = 0.45;
 
     private final GameState gameState;
+    private final GameController gameController;
 
-    public CollisionController(GameState gameState) {
+    public CollisionController(GameState gameState, GameController gameController) {
+        if (gameState == null) {
+            throw new IllegalArgumentException("GameState cannot be null");
+        }
+        if (gameController == null) {
+            throw new IllegalArgumentException("GameController cannot be null");
+        }
+
         this.gameState = gameState;
+        this.gameController = gameController;
     }
 
     private GameUiPort gameUiPort() {
@@ -71,7 +79,7 @@ public class CollisionController {
             }
 
             if (isPlayerEatenBy(otherFish)) {
-                App.content().gameController().playerLost();
+                gameController.playerLost();
                 return;
             } else if (canPlayerEat(otherFish)) {
                 gameState.removeFish(i);
@@ -88,7 +96,7 @@ public class CollisionController {
                         gameState.getLevelProgress().getCurrentPoints(),
                         gameState.getLevelProgress().getNextLevelThreshold());
                 if (gameState.getLevelProgress().hasCompletedAllLevels()) {
-                    App.content().gameController().playerWon();
+                    gameController.playerWon();
                     return;
                 }
             }
