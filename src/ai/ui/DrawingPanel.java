@@ -298,7 +298,6 @@ public class DrawingPanel extends JPanel {
             if (f != null) {
                 int fishId = Integer.parseInt(draggedFishId);
                 mainRouter.route("/ocean/player/move", Params.of(fishId, (double) x, (double) y));
-                mainRouter.route("/ocean/fish/eat", Params.of(fishId));
                 repaint();
             }
         }

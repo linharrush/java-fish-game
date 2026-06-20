@@ -4,7 +4,6 @@ import java.util.Random;
 import team.control.MovementController;
 import team.control.CollisionController;
 import team.control.DifficultyController;
-import team.control.FishMovementController;
 import team.control.GameController;
 import team.control.GameLoopController;
 import team.control.SpawnController;
@@ -23,7 +22,6 @@ public class AppContent {
 	private GameState gameState;
 	private DifficultyController difficultyController;
 	private SpawnController spawnController;
-	private FishMovementController fishMovementController;
 	private MovementController movementController;
 	private CollisionController collisionController;
 	private GameController gameController;
@@ -35,10 +33,9 @@ public class AppContent {
 		difficultyController = new DifficultyController(random);
 		spawnController = new SpawnController(gameState, difficultyController, random);
 		gameController = new GameController(gameState, spawnController);
-		fishMovementController = new FishMovementController(gameState);
 		movementController = new MovementController(gameState);
 		collisionController = new CollisionController(gameState, gameController);
-		gameLoopController = new GameLoopController(gameState, fishMovementController, spawnController);
+		gameLoopController = new GameLoopController(gameState, movementController, spawnController, collisionController);
 	};
 
 	public Canvas canvas() {
@@ -62,10 +59,6 @@ public class AppContent {
 
 	public SpawnController spawnController() {
 		return spawnController;
-	}
-
-	public FishMovementController fishMovementController() {
-		return fishMovementController;
 	}
 
 	public GameLoopController gameLoopController() {
